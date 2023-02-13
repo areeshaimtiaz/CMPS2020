@@ -1,0 +1,149 @@
+#include <iostream>
+using namespace std;
+
+class CreditCard
+{
+    protected:
+        string number;
+        string type;
+        int expmo, expyear;
+
+        bool check_luhn()
+        {
+            int nDigits = number.length();
+            int nSum = 0, isSecond = false;
+            for (int i = nDigits - 1; i >= 0; i--)
+            {
+                int d = number[i] - '0';
+                if (isSecond == true)
+                {
+                    d = d * 2;
+                }
+
+                nSum += d / 10;
+                nSum += d % 10;
+
+                isSecond = !isSecond;
+            }
+            return (nSum % 10 == 0);
+        }
+
+    public:
+        CreditCard(string num, int exm, int exy)
+        {
+            number = num;
+            expmo = exm;
+            expyear = exy;
+        }
+
+        virtual bool validate(int curmo, int cury, string code) = 0;
+};
+
+class Visa : public CreditCard
+{
+    public:
+        Visa(string num, int m, int y) : CreditCard(num, m, y)
+        {
+        type = "Visa";
+        }
+ 50 
+ 51         bool validate(int cm, int cy, string code)
+ 52         {
+ 53             int stored = expyear * 100 + expmo;     // 202211
+ 54             int curr = cy * 100 + cm;               // 202202
+ 55 
+ 56             return (curr <= stored) && number.length() == 16 && code.length() == 3 && number[0] == '4' && check_luhn();
+ 57         }
+ 58 };
+ 59 
+ 60 class Mastercard : public CreditCard
+ 61 {
+ 62     public:
+ 63         Mastercard(string num, int m, int y) : CreditCard(num, m, y)
+ 64     {
+ 65         type = "Mastercard";
+ 66     }
+ 67 
+ 68         bool validate(int cm, int cy, string code)
+ 69         {
+ 70             int stored = expyear * 100 + expmo;     // 202211
+ 71             int curr = cy * 100 + cm;               // 202202
+ 72 
+ 73             return (curr <= stored) && number.length() == 16 && code.length() == 3 && number[0] == '5' && check_luhn();
+        }
+ 75 };
+ 76 
+ 77 class Amex : public CreditCard
+ 78 {
+ 79     public:
+ 80         Amex(string num, int m, int y) : CreditCard(num, m, y)
+ 81     {
+ 82         type = "Amex";
+ 83     }
+ 84 
+ 85         bool validate(int cm, int cy, string code)
+ 86         {
+ 87             int stored = expyear * 100 + expmo;     // 202211
+ 88             int curr = cy * 100 + cm;               // 202202
+ 89 
+ 90             return (curr <= stored) && number.length() == 15 && code.length() == 4 && number[0] == '3' && check_luhn();
+ 91         }
+ 92 };
+ 93 
+ 94 CreditCard * create()
+ 95 {
+ 96     string ccno;
+ 97     int ccmo, ccyr;
+ 98 
+ 99     cout << "Enter credit card number: ";
+100     cin >> ccno;
+101 
+102     cout << "Enter card exp month and year: ";
+103     cin >> ccmo >> ccyr;
+104 
+105     if (ccno[0] == '4')
+106     {
+107         return new Visa(ccno, ccmo, ccyr);
+108     }
+109     else if (ccno[0] == '3')    // Amex
+110     {
+111         return new Amex(ccno, ccmo, ccyr);
+112     }
+113     else if (ccno[0] == '5')    // Mastercard
+114     {
+115         return new Mastercard(ccno, ccmo, ccyr);
+116     }
+117     else
+118         return NULL;
+119 }
+120 
+121 int main()
+122 {
+123     int valmo = 2, valyear = 2023;  // this represents the current month and year
+124     string valcode;
+125 
+126     CreditCard * cc = create();
+127 
+128     if (cc != NULL)
+129     {
+130         cout << "Enter validation code: ";
+131         cin >> valcode;
+132 
+133         if (cc->validate(valmo, valyear, valcode))
+134         {
+135             cout << "Approved" << endl;
+136         }
+137         else
+138         {
+139             cout << "Declined" << endl;
+140         }
+141     }
+142     else
+143         cout << "Invalid credit card" << endl;
+                                                                                                                       
+145     delete cc;
+146 
+147     return 0;
+148 }
+149 
+                                                                                                                                                                                                                            149,0-1       Bot
