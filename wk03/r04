@@ -1,0 +1,23 @@
+ 1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 void getmem()
+  6 {
+  7     try
+  8     {
+  9         double * val = new double[10000000000000];
+ 10         delete val;
+ 11     }
+ 12     catch (bad_alloc & ex)
+ 13     {
+ 14         cerr << ex.what() << endl;
+ 15     }
+ 16 }
+ 17 
+ 18 int main()
+ 19 {
+ 20     getmem();
+ 21 
+ 22     return 0;
+ 23 }
