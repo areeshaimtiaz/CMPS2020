@@ -1,0 +1,148 @@
+ 1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 class CreditCard
+  6 {
+  7     protected:
+  8         string number;
+  9         string type;
+ 10         int expmo, expyear;
+ 11 
+ 12         bool check_luhn()
+ 13         {
+ 14             int nDigits = number.length();
+ 15             int nSum = 0, isSecond = false;
+ 16             for (int i = nDigits - 1; i >= 0; i--)
+ 17             {
+ 18                 int d = number[i] - '0';
+ 19                 if (isSecond == true)
+ 20                 {
+ 21                     d = d * 2;
+ 22                 }
+ 23 
+ 24                 nSum += d / 10;
+ 25                 nSum += d % 10;
+ 26 
+ 27                 isSecond = !isSecond;
+ 28             }
+ 29             return (nSum % 10 == 0);
+ 30         }
+ 31 
+ 32     public:
+ 33         CreditCard(string num, int exm, int exy)
+ 34         {
+ 35             number = num;
+ 36             expmo = exm;
+ 37             expyear = exy;
+ 38         }
+ 39 
+ 40         virtual bool validate(int curmo, int cury, string code) = 0;
+ 41 };
+ 42 
+ 43 class Visa : public CreditCard
+ 44 {
+ 45     public:
+ 46         Visa(string num, int m, int y) : CreditCard(num, m, y)
+ 47     {
+ 48         type = "Visa";
+ 49     }
+ 50 
+ 51         bool validate(int cm, int cy, string code)
+ 52         {
+ 53             int stored = expyear * 100 + expmo;     // 202211
+ 54             int curr = cy * 100 + cm;               // 202202
+ 55 
+ 56             return (curr <= stored) && number.length() == 16 && code.length() == 3 && number[0] == '4' &&     check_luhn();
+ 57         }
+ 58 };
+ 59 
+ 60 class Mastercard : public CreditCard
+ 61 {
+ 62     public:
+ 63         Mastercard(string num, int m, int y) : CreditCard(num, m, y)
+ 64     {
+ 65         type = "Mastercard";
+  66     }
+ 67 
+ 68         bool validate(int cm, int cy, string code)
+ 69         {
+ 70             int stored = expyear * 100 + expmo;     // 202211
+ 71             int curr = cy * 100 + cm;               // 202202
+ 72 
+ 73             return (curr <= stored) && number.length() == 16 && code.length() == 3 && number[0] == '5' &&     check_luhn();
+ 74         }
+ 75 };
+ 76 
+ 77 class Amex : public CreditCard
+ 78 {
+ 79     public:
+ 80         Amex(string num, int m, int y) : CreditCard(num, m, y)
+ 81     {
+ 82         type = "Amex";
+ 83     }
+ 84 
+ 85         bool validate(int cm, int cy, string code)
+ 86         {
+ 87             int stored = expyear * 100 + expmo;     // 202211
+ 88             int curr = cy * 100 + cm;               // 202202
+ 89 
+ 90             return (curr <= stored) && number.length() == 15 && code.length() == 4 && number[0] == '3' &&     check_luhn();
+ 91         }
+ 92 };
+ 93 
+ 94 CreditCard * create()
+ 95 {
+  96     string ccno;
+ 97     int ccmo, ccyr;
+ 98 
+ 99     cout << "Enter credit card number: ";
+100     cin >> ccno;
+101 
+102     cout << "Enter card exp month and year: ";
+103     cin >> ccmo >> ccyr;
+104 
+105     if (ccno[0] == '4')
+106     {
+107         return new Visa(ccno, ccmo, ccyr);
+108     }
+109     else if (ccno[0] == '3')    // Amex
+110     {
+111         return new Amex(ccno, ccmo, ccyr);
+112     }
+113     else if (ccno[0] == '5')    // Mastercard
+114     {
+115         return new Mastercard(ccno, ccmo, ccyr);
+116     }
+117     else
+118         return NULL;
+119 }
+120 
+121 int main()
+122 {
+123     int valmo = 2, valyear = 2023;  // this represents the current month and year
+124     string valcode;
+125 
+126     CreditCard * cc = create();
+127 
+128     if (cc != NULL)
+129     {
+130         cout << "Enter validation code: ";
+131         cin >> valcode;
+132 
+133         if (cc->validate(valmo, valyear, valcode))
+134         {
+135             cout << "Approved" << endl;
+136         }
+137         else
+138         {
+139             cout << "Declined" << endl;
+140         }
+141     }
+142     else
+143         cout << "Invalid credit card" << endl;
+144 
+145     delete cc;
+146 
+147     return 0;
+148 }
