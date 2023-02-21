@@ -1,0 +1,72 @@
+ 1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 struct Item
+  6 {
+  7     string name = "";
+  8     int qty = 1;
+  9     double cost = 0.00;
+ 10     bool taxable;
+ 11 };
+ 12 
+ 13 double cart_total(Item cart[], int size)
+ 14 {
+ 15     double total = 0;
+ 16 
+ 17     for (int i = 0; i < size; i++)
+ 18     {
+ 19         total += (cart[i].qty * cart[i].cost);
+ 20     }
+ 21 
+ 22     return total;
+ 23 }
+ 24 
+ 25 double cart_total_taxed(Item cart[], int size, double tax_rate = 8.5)
+ 26 {
+ 27     double total = cart_total(cart, size);
+ 28     return total * (1 + (tax_rate / 100));
+ 29 }
+ 30 
+ 31 Item get_item_from_user()
+ 32 {
+ 33     Item user;
+ 34 
+ 35     cout << "Enter item name: ";
+ 36     cin >> user.name;
+ 37 
+ 38     cout << "Enter item qty: ";
+ 39     cin >> user.qty;
+ 40 
+ 41     cout << "Enter item cost: ";
+ 42     cin >> user.cost;
+ 43 
+ 44     return user;
+ 45 }
+ 46 
+ 47 void get_items(Item cart[], int size)
+ 48 {
+ 49     for (int i = 0; i < size; i++)
+ 50     {
+ 51         cart[i] = get_item_from_user();
+ 52     }
+ 53 }
+ 54 
+ 55 void set_item(Item & item, string name, int qty, double cost)
+ 56 {
+ 57     item.name = name;
+ 58     item.qty = qty;
+ 59     item.cost = cost;
+ 60 }
+ 61 
+ 62 void display_cart()
+ 63 {
+ 64     // display all items in the cart. Display total with tax
+ 65     // can add as many params as you want
+ 66 }
+ 67 
+ 68 int main()
+ 69 {
+ 70 
+ 71     return 0;
+ 72 }
