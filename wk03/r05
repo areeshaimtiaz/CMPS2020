@@ -1,0 +1,26 @@
+ 1 #include <iostream>
+  2 #include <fstream>
+  3 
+  4 using namespace std;
+  5 
+  6 bool load(string filename)
+  7 {
+  8     string line;
+  9     ifstream fin;
+ 10     fin.open(filename);
+ 11     while (getline(fin, line))
+ 12     {
+ 13         // at this point, line contains a line of text from config.ini
+ 14 
+ 15         // one exception check
+ 16         //
+ 17         //
+ 18 
+ 19     }
+ 20     fin.close();
+ 21 }
+ 22 
+ 23 int main()
+ 24 {
+ 25     return 0;
+ 26 }
