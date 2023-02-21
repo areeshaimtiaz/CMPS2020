@@ -1,0 +1,33 @@
+ 1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 struct Truck
+  6 {
+  7     double tank, mpg;
+  8     string passengers[10];
+  9 };
+ 10 
+ 11 Truck * create(double t, double m, string * pass)
+ 12 {
+ 13     Truck * temp = new Truck;
+ 14 
+ 15     temp->tank = t;
+ 16     temp->mpg = m;
+ 17     temp->passengers = pass;
+ 18     return temp;
+ 19 }
+ 20 
+ 21 int main()
+ 22 {
+ 23     Truck * t1;
+ 24 
+ 25     string passengers[10];
+ 26     t1 = create(10, 10, passengers);
+ 27 
+ 28 //    cout << (*t1).mpg << endl;
+ 29 
+ 30     delete t1;
+ 31 
+ 32     return 0;
+ 33 }
