@@ -1,0 +1,30 @@
+1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 #define DEBUG false
+  6 #define SHOW(text) if (DEBUG) { cout << text << endl; }
+  7 
+  8 void fn1()
+  9 {
+ 10     SHOW("In fn1");
+ 11     cout << "fn1" << endl;
+ 12 }
+ 13 
+ 14 void fn2()
+ 15 {
+ 16     SHOW("In fn2");
+ 17     cout << "fn2" << endl;
+ 18 }
+ 19 
+ 20 
+ 21 int main()
+ 22 {
+ 23     SHOW("A");
+ 24     fn1();
+ 25     SHOW("B");
+ 26     fn2();
+ 27     SHOW("C");
+ 28 
+ 29     return 0;
+ 30 }
