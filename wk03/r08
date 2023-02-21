@@ -1,0 +1,80 @@
+  1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 class Shape
+  6 {
+  7     protected:
+  8         int sides;
+  9     public:
+ 10         // Pure Virtual Function (PVF)
+ 11         virtual double calc_area() = 0;
+ 12 };
+ 13 
+ 14 class Pentagon : public Shape
+ 15 {
+ 16 
+ 17 };
+ 18 
+ 19 class Circle : public Shape
+ 20 {
+ 21     private:
+ 22         double radius;
+ 23     public:
+ 24         Circle(double r)
+ 25         {
+ 26             radius = r;
+ 27             sides = 1;
+ 28         }
+ 29 
+ 30         double calc_area()
+ 31         {
+ 32             return 3.1415 * radius * radius;
+ 33         }
+34 };
+ 35 
+ 36 class Rectangle : public Shape
+ 37 {
+ 38     private:
+ 39         double length, width;
+ 40     public:
+ 41         Rectangle(double l, double w)
+ 42         {
+ 43             length = l;
+ 44             width = w;
+ 45             sides = 4;
+ 46         }
+ 47 
+ 48         double calc_area() { return length * width; }
+ 49 };
+ 50 
+ 51 void show(Shape &s)
+ 52 {
+ 53     cout << "In show function " << endl;
+ 54     cout << s.calc_area() << endl;
+ 55 }
+ 56 
+ 57 int main()
+ 58 {
+ 59     Shape * s = new Circle(10);
+ 60     Shape * r = new Rectangle(10, 5);
+ 61 //    Shape s5;
+ 62 
+ 63     cout << s->calc_area() << endl;
+ 64     show(*s);
+ 65 
+ 66     show(*r);
+67 
+ 68     /*
+ 69     Circle c1(10);
+ 70     Rectangle r1(10, 5);
+ 71 
+ 72     cout << s1.calc_area() << endl;
+ 73     cout << c1.calc_area() << endl;
+ 74     cout << r1.calc_area() << endl;
+ 75     */
+ 76 
+ 77     delete s;
+ 78 
+ 79     return 0;
+ 80 }
