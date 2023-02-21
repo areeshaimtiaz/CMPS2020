@@ -1,0 +1,39 @@
+1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 template <class T, class U, class V>
+  6 class Sample
+  7 {
+  8     private:
+  9         T a;
+ 10         U b;
+ 11         V c;
+ 12         int x;
+ 13 
+ 14     public:
+ 15         Sample(T aa, U bb, V cc)
+ 16         {
+ 17             a = aa;
+ 18             b = bb;
+ 19             c = cc;
+ 20         }
+ 21 
+ 22         template <typename T1 = int, typename T2 = char>
+ 23         void fn(T1 xx, T2 yy)
+ 24         {
+ 25         }
+ 26 };
+ 27 
+ 28 int main()
+ 29 {
+ 30     Sample<int, string, double> s1(10, "test", 3.14);
+ 31     Sample<bool, bool, bool> s2(true, false, true);
+ 32 
+ 33     s1.fn<int, int>(0, 0);
+34     s2.fn<string, double>("A", 1.0);
+ 35     s2.fn<string>("A", 'a');
+ 36     s2.fn(1, 'z');
+ 37 
+ 38     return 0;
+ 39 }
