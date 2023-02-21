@@ -1,0 +1,23 @@
+ 1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 class Human
+  6 {
+  7     protected:
+  8         double weight;
+  9 };
+ 10 
+ 11 class Person : public Human
+ 12 {
+ 13     private:
+ 14         string name;
+ 15 };
+ 16 
+ 17 int main()
+ 18 {
+ 19     Human h1;
+ 20     Person p1;
+ 21 
+ 22     return 0;
+ 23 }
