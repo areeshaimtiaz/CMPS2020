@@ -1,0 +1,11 @@
+  1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 int main()
+  6 {
+  7     cout << "Standard output" << endl;
+  8     cerr << "Error output" << endl;
+  9 
+ 10     return 0;
+ 11 }
