@@ -1,0 +1,61 @@
+1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 /*
+  6 void fill(double array[], int size, double value)
+  7 {
+  8     for (int i = 0; i < size; i++)
+  9     {
+ 10         array[i] = value;
+ 11     }
+ 12 }
+ 13 
+ 14 void fill(string array[], int size, string value)
+ 15 {
+ 16     for (int i = 0; i < size; i++)
+ 17     {
+ 18         array[i] = value;
+ 19     }
+ 20 }
+ 21 */
+ 22 
+ 23 struct Truck
+ 24 {
+ 25     string name;
+ 26     double mpg;
+ 27 };
+ 28 
+ 29 template <typename T> void fill(T array[], int size, T value)
+ 30 {
+ 31     for (int i = 0; i < size; i++)
+ 32     {
+ 33         array[i] = value;
+34     }
+ 35 }
+ 36 
+ 37 template <> void fill(Truck array[], int size, Truck value)
+ 38 {
+ 39     for (int i = 0; i < size; i++)
+ 40     {
+ 41         array[i].name = value.name;
+ 42         array[i].mpg = value.mpg;
+ 43     }
+ 44 }
+ 45 
+ 46 
+ 47 int main()
+ 48 {
+ 49     string names[10];
+ 50     double scores[10];
+ 51     Truck fleet[10];
+ 52     Truck starter { name: "", mpg: 0 };
+ 53 
+ 54     fill<string>(names, 10, "");
+ 55     fill<double>(scores, 10, 0);
+ 56     fill<Truck>(fleet, 10, starter);
+ 57 
+ 58 
+ 59 
+ 60     return 0;
+ 61 }
