@@ -1,0 +1,59 @@
+ 1 #include <iostream>
+  2 
+  3 using namespace std;
+  4 
+  5 class Shape
+  6 {
+  7     protected:
+  8         int sides;
+  9     public:
+ 10         double calc_area()
+ 11         {
+ 12             return -1;
+ 13         }
+ 14 };
+ 15 
+ 16 class Circle : public Shape
+ 17 {
+ 18     private:
+ 19         double radius;
+ 20     public:
+ 21         Circle(double r)
+ 22         {
+ 23             radius = r;
+ 24             sides = 1;
+ 25         }
+ 26 
+ 27         double calc_area()
+ 28         {
+ 29             return 3.1415 * radius * radius;
+ 30         }
+ 31 };
+ 32 
+ 33 class Rectangle : public Shape
+34 {
+ 35     private:
+ 36         double length, width;
+ 37     public:
+ 38         Rectangle(double l, double w)
+ 39         {
+ 40             length = l;
+ 41             width = w;
+ 42             sides = 4;
+ 43         }
+ 44 
+ 45         double calc_area() { return length * width; }
+ 46 };
+ 47 
+ 48 int main()
+ 49 {
+ 50     Shape s1;
+ 51     Circle c1(10);
+ 52     Rectangle r1(10, 5);
+ 53 
+ 54     cout << s1.calc_area() << endl;
+ 55     cout << c1.calc_area() << endl;
+ 56     cout << r1.calc_area() << endl;
+ 57 
+ 58     return 0;
+ 59 }
