@@ -1,0 +1,167 @@
+ 1 #include <iostream>
+  2 using namespace std;
+  3 
+  4 struct Location
+  5 {
+  6     string name;
+  7     string url;
+  8 };
+  9 
+ 10 struct VisitNode
+ 11 {
+ 12     Location loc;
+ 13     VisitNode * next;
+ 14 };
+ 15 
+ 16 class Stack
+ 17 {
+ 18     private:
+ 19         VisitNode * head = NULL;
+ 20 
+ 21         VisitNode * create()
+ 22         {
+ 23             VisitNode * newnode;
+ 24             try
+ 25             {
+ 26                 newnode = new VisitNode;
+ 27             }
+ 28             catch (bad_alloc)
+ 29             {
+ 30                 newnode = NULL;
+ 31             }
+ 32             return newnode;
+ 33         }
+ 34 
+ 35         // USAGE: To create a new node, use as follows
+ 36         // VisitNode * newnode = create();
+ 37 
+ 38         void deallocate()
+ 39         {
+ 40             // This function will traverse the entire list and delete each node. Remember to make a copy of head. Also, realize that if you delete the cur    rent node as you're traversing, you may lose the reference to the next node.
+ 41             VisitNode * temp;
+ 42             while (head != NULL)
+ 43             {
+ 44                 temp = head;
+ 45                 temp = temp->next;
+ 46                 delete head;
+ 47                 head = temp;
+ 48             }
+ 49         }
+ 50     public:
+ 51         // Create a destructor which will call deallocate() and set head to NULL.
+ 52         ~ Stack ()
+ 53         {
+ 54             deallocate();
+ 55             head = NULL;
+ 56         }
+ 57         bool push(string name, string url)
+ 58         {
+ 59             bool flag = false;
+ 60             // create a new node (VisitNode) using the create() function you wrote earlier. The new node will be assigned the values for loc from the func    tion's parameter values.
+ 61 
+ 62             VisitNode * newnode = create();
+ 63             newnode->loc.name = name;
+ 64             newnode->loc.url = url;
+ 65 
+ 66             // add the new node to the front of the linked list (where head points). Remember to deal with two possible scenarios: 1) The list is still em    pty and this is the first node to be added and 2) The list is not empty 
+ 67             // point head to the newly-added node
+ 68 
+ 69             // This list is still empty and this is the first node to be added
+ 70             if (head == NULL)
+ 71             {
+ 72                 head = newnode;
+ 73                 newnode->next = NULL;
+ 74             }
+ 75             // the list is not empty
+ 76             else
+ 77             {
+ 78                 newnode->next = head;
+ 79                 head = newnode;
+ 80             }
+ 81 
+ 82             if (newnode != NULL)
+ 83             {
+ 84                 flag = true;
+ 85             }
+ 86             // return true if it's successful, and false otherwise. The only reason it would be false is if the new node didn't get created by the create(    ) function (if the new node is NULL)
+ 87             return flag;
+ 89 
+ 90         string pop()
+ 91         {
+ 92             VisitNode * temp;
+ 93             string result = "";
+ 94             // Identify the node at the front of the list (if not empty)
+ 95             if (head != NULL)
+ 96             {
+ 97                 temp = head;
+ 98                 // Copy the value of the node's loc.name property into a temporary variable
+ 99                 result = temp->loc.name;
+100                 // Point head to the next node in the list (or NULL if it's the last node)
+101 
+102                 // Next Node
+103                 if (head->next != NULL)
+104                 {
+105                     temp = temp->next;
+106                 }
+107                 // Last Node
+108                 else
+109                 {
+110                     temp = NULL;
+111                 }
+112             }
+113 
+114             // delete the first node (this effectively is the "pop" action)
+115             delete head;
+116             head = temp;
+117 
+118             // Return the loc.name value stored in the temporary variable. Return a blank string if the linked list is empty
+119             return result;
+120         }
+121 
+122         friend void show(Stack & S);
+123 
+124         // This will display all the loc.name values of all the nodes on a single line, separated by spaces. Traverse the entire linked list to show the n    ode values.
+125 
+126 };
+127 void show(Stack & S)
+128 {
+129     VisitNode * temp = S.head;
+130     while (temp != NULL)
+131     {
+132         cout << temp->loc.name << " ";
+133         temp = temp->next;
+134     }
+135 }
+136 int main()
+137 {
+138     Stack browser;
+139 
+140     // simulate a browser history
+141     browser.push("Google", "//google.com");
+142     browser.push("Amazon", "//amazon.com");
+143     browser.push("LinkedIn", "//LinkedIn.com");
+144     browser.push("Reddit", "//reddit.com");
+145 
+146     show(browser);   // this should show the entire history
+147 
+148     // simulate clicking Back button
+149     string top = browser.pop();
+150     if (top != "")
+151         cout << endl << "Clicked back from " << top << endl;
+152     show(browser);
+153 
+154     // simulate clicking Back button  
+155     top = browser.pop();
+156     if (top != "")
+157         cout << endl << "Clicked back from " << top << endl;
+158     show(browser);
+159 
+160     // simulate clicking Back button
+161     top = browser.pop();
+162     if (top != "")
+163         cout << endl << "Clicked back from " << top << endl;
+164     show(browser);
+165 
+166     cout << endl;
+167     return 0;
+168 }                                                                                                                                       168,1         Bo
