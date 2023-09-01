@@ -1,0 +1,125 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <limits>
+#include <iomanip>
+using namespace std;
+
+struct CountyInfo
+{
+    string name;
+    double infections;
+};
+
+class CoronaData
+{
+    protected:
+        CountyInfo data[5];
+
+    public:
+        CoronaData()
+        {
+            data[0].name = "Los Angeles";
+            data[0].infections = 255000;
+            data[1].name = "Riverside";
+            data[1].infections = 55766;
+            data[2].name = "Orange";
+            data[2].infections = 52166;
+            data[3].name = "San Bernardino";
+            data[3].infections = 50709;
+            data[4].name = "San Diego";
+            data[4].infections = 42950;
+        }
+
+        virtual void save_to_file(string filename) = 0;
+};
+
+class CoronaDataJson : public CoronaData
+{
+    public:
+        void save_to_file(string filename) override
+        {
+            ofstream file(filename);
+            
+            if (!file.is_open())
+            {
+                cout << "Failed to open file." << endl;
+                return;
+            }
+
+            file << "{\n";
+            file << "  \"data\" : [\n";
+            for (int i = 0; i < 5; i++)
+            {
+                file << "    { \"name\" : \"" << data[i].name << "\", \"infections\" : \"" << fixed << setprecision(4) << data    [i].infections << "\" }";
+                if (i != 4)
+                {
+                    file << ",";
+                }
+                file << "\n";
+            }
+            file << "  ]\n";
+            file << "}";
+
+            file.close();
+            cout << "File is ready." << endl;
+        }
+};
+
+class CoronaDataCsv : public CoronaData
+{
+    public:
+        void save_to_file(string filename) override
+        {
+            ofstream file(filename);
+
+            if (!file.is_open())
+            {
+                cout << "Failed to open file." << endl;
+                return;
+            }
+
+            file << "County, Infections\n";
+            for (int i = 0; i < 5; i++)
+            {
+                file << "\"" << data[i].name << "\", " << fixed << setprecision(4) << data[i].infections << "\n";
+            }
+
+            file.close();
+            cout << "File is ready." << endl;
+        }
+};
+
+void save(CoronaData * cd, string filename)
+{
+    cd->save_to_file(filename);
+}
+
+int main()
+{
+    CoronaData * cd;
+    char input;
+
+    cout << "Choose an output format (J for JSON, C for CSV): ";
+    cin >> input;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if ((input == 'J') || (input == 'j'))
+    {
+        cd = new CoronaDataJson;
+        save(cd, "corona.json");
+    }
+    else if ((input == 'C') || (input == 'c'))
+    {
+        cd = new CoronaDataCsv;
+        save(cd, "corona.csv");
+    }
+    else
+    {
+        cout << "Invalid format selected." << endl;
+        return 0;
+    }
+
+    delete cd;
+    return 0;
+}
