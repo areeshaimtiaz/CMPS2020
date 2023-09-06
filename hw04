@@ -1,0 +1,288 @@
+#include <iostream>
+using namespace std;
+
+struct Window
+{
+    string appname;
+    Window *next;
+    Window *prev;
+};
+
+class WindowManager
+{
+    private:
+        Window * current; // current will keep track of the "current" program
+        Window * dummy; // dummy will always point to the dummy node
+
+        Window * create()
+        {
+            Window * newnode;
+            try
+            {
+                newnode = new Window;
+            }
+            catch (bad_alloc)
+            {
+                newnode = NULL;
+            }
+            return newnode;
+        }
+
+        // USAGE: To create a new node, use as follows
+        // Window * newnode = create();
+
+        void deallocate()
+        {
+            // This function will traverse the entire list and delete each node
+            // Remember to make a copy of dummy
+            // Also, realize that if you delete the current node as you're traversing, you may lose the re    ference to the next node
+            Window * temp = dummy->next;
+            while (temp != dummy)
+            {
+                temp = temp->next;
+                delete temp->prev;
+            }
+
+            // Make sure that the dummy node is also deleted
+            delete dummy;
+        }
+
+    public:
+        // Default Constructor
+        WindowManager()
+        {
+            dummy = create();
+            dummy->appname = ""; // Set the appname property of the dummy node to a blank string
+            dummy->next = dummy; // Make sure that dummy's next and prev pointers point to itself when fir    st starting out
+            dummy->prev = dummy; // Make sure that dummy's next and prev pointers point to itself when fir    st starting out
+        }
+
+        // Destructor
+        ~ WindowManager()
+        {
+            deallocate();
+            dummy = NULL;
+        }
+
+        bool start_app(string name)
+        {
+            bool result = false;
+            // This function will create a new Window node and insert the new node to the left of the dumm    y node
+            // Remember that after adding the first node, this node's next and prev will point to the dumm    y node
+            // Also, next and prev of the dummy node will point to the first node
+            // This only occurs with the addition of the first node
+
+            Window * newnode = create();
+            newnode->appname = name;
+            newnode->next = dummy;
+            newnode->prev = dummy->prev;
+            dummy->prev->next = newnode;
+            dummy->prev = newnode;
+
+            // Set current to the node created in this function
+            // Think of current as the last app launched by the user
+            current = newnode;
+
+            if (newnode != NULL)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
+        Window * find_app(string name)
+        {
+            // This function will perform a traversal searching the queue for a node with appname equal to      name
+            // You can perform the traversal in any direction (going in the direction of next from the dum    my node, or going in the direction of prev from the prev node)
+            //  No matter which direction you choose to traverse to search for the node, you will either f    ind a matching node, in which case you will return the address of that node, or you end up back at the dum    my node without finding a match
+            //  If you traverse the entire queue without finding the matching node, the function should re    turn a NULL
+            //  Remember to skip over the dummy node during any traversals
+            bool found = false;
+
+            Window * temp = dummy->next;
+
+            while ((temp->next != dummy) && (!found))
+            {
+                if (temp->appname == name)
+                {
+                    found = true;
+                }
+                else
+                {
+                    temp = temp->next;
+                }
+            }
+
+            if (found == false)
+            {
+                temp = NULL;
+            }
+            return temp;
+        }
+
+        bool close_app(string name)
+        {
+            bool result = false;
+            // If the queue is empty, then current is NULL
+            if (dummy->prev != dummy->next)
+            {
+
+                // This function calls find_app() to help find the app's node
+                Window * temp = find_app(name);
+
+                // If a matching node is found, delete the node and take it out of the queue
+                // If a matching node is found, return true. Otherwise, return false
+                if (temp == NULL) // Not Found
+                {
+                    result = false;
+                }
+                else // Found
+                {
+                    result = true;
+                    temp->prev->next = temp->next;
+                    temp->next->prev = temp->prev;
+    
+                    // Set current to the next node following the app that was just closed
+                    // Remember to skip over the dummy node during any traversals - current cannot point t    o the dummy node
+                    if (temp->next == dummy)
+                    {
+                        current = temp->next->next;
+                    }
+                    else
+                    {
+                        current = temp->next;
+                    }
+
+                    delete temp;
+                }
+            }
+            else
+            {
+                current = NULL;
+            }
+    
+            return result;
+        }
+
+        string get_current()
+        {
+            string result;
+            // This function will return  appname of current
+            // If current is NULL, it should return a blank string
+            if (current == NULL)
+            {
+                result = "";
+            }
+            else
+            {
+                result = current->appname;
+            }
+            return result;
+        }
+
+        string next()
+        {
+            string result;
+            // This program advances current to the next app in the circular queue
+            // If the queue is empty, then current is NULL
+            if ((dummy->next == dummy) && (dummy->prev == dummy))
+            {
+                current = NULL;
+            }
+            // Remember to skip the dummy node during the traversal
+            else if (current->next == dummy)
+            {
+                current = current->next->next;
+            }
+            else
+            {
+                current = current->next;
+            }
+
+            result = get_current();
+
+            return result;
+        }
+
+        string previous()
+        {
+            string result;
+            // This program "advances" current to the previous app in the circular queue
+            // If the queue is empty, then current is NULL
+            if (dummy->next == dummy->prev)
+            {
+                current == NULL;
+            }
+            // Remember to skip the dummy node during the traversal
+            else if (current->prev == dummy)
+            {
+                current = current->prev->prev;
+            }
+            else
+            {
+                current = current->prev;
+            }
+
+            result = get_current();
+
+            return result;
+        }
+};
+
+int main()
+{
+    WindowManager winman;
+
+    // Simulate some apps running
+    winman.start_app("Microsoft Word");
+    winman.start_app("Firefox");
+    winman.start_app("Halo");
+    winman.start_app("Calculator");
+    
+    // At this point, Calculator is the last app launched and should be the value of current in winman
+    int action;
+    string name;
+    do
+    {
+        cout << "1 - Launch new app" << endl;
+        cout << "2 - Close current app" << endl;
+        cout << "3 - Find app, then close it" << endl;
+        cout << "4 - Go to next app" << endl;
+        cout << "5 - Go to previous app" << endl;
+        cout << "0 - Shutdown" << endl;
+        cout << "Enter choice: ";
+        cin >> action;
+
+        switch (action)
+        {
+            case 1:
+                cout << "Enter an app name: ";
+                cin >> name;
+                winman.start_app(name);
+                break;
+            case 2:
+                winman.close_app(winman.get_current());
+                cout << "New current app: " << winman.get_current() << endl;
+                break;
+            case 3:
+                cout << "Enter an app name: ";
+                cin >> name;
+                winman.close_app(name);
+                cout << "New current app: " << winman.get_current() << endl;
+                break;
+            case 4:
+                winman.next();
+                cout << "New current app: " << winman.get_current() << endl;
+                break;
+            case 5:
+                winman.previous();
+                cout << "New current app: " << winman.get_current() << endl;
+                break;
+        }
+
+    } while (action != 0);
+    cout << "Shutting down..." << endl;
+
+    return 0;
+}  
