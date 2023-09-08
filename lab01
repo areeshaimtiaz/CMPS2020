@@ -12,82 +12,82 @@ class Sensor
         Sensor() {}
 
         Sensor(string n, bool byp = false, bool io = false)
- 15         {
- 16             name = n;
- 17             is_open = io;
- 18             bypassed = byp;
- 19         }
- 20 
- 21         bool get_is_open() const // Accessor
- 22         {
- 23             return is_open;
- 24         }
- 25 
- 26         bool get_bypassed() const // Accessor
- 27         {
- 28             return bypassed;
- 29         }
- 30 };
- 31 
- 32 Sensor * create(string name, bool is_bypassed, bool is_open)
- 33 {
- 34     Sensor * s1 = new Sensor(name, is_bypassed, is_open);
- 35     return s1;
- 36 }
- 37 
- 38 class Location
- 39 {
-40     private:
- 41         Sensor * sensors[100];
- 42         int count;  // keeps track of sensors added to array
- 43         int opensensors = 0;
- 44         int bypassedsensors = 0;
- 45         bool armed;
- 46     public:
- 47         Location()
- 48         {
- 49             count = 0;
- 50             armed = false;
- 51         }
- 52 
- 53         void add(string name, bool byp, bool io)
- 54         {
- 55             sensors[count] = create(name, byp, io); // assigns the address of the new sensor to the vacant sensor array slot
- 56             count++;
- 57         }
- 58 
- 59         bool arm()
- 60         {
- 61             bool flag = true;
- 62 
- 63             for (int i = 0; i < count; i++)
- 64             {
- 65                 if (sensors[i]->get_is_open())
- 66                 {
- 67                     opensensors++;
- 68                 }
- 69 
- 70                 if (sensors[i]->get_bypassed())
- 71                 {
- 72                     bypassedsensors++;
- 73                 }
- 74 
- 75                 if (sensors[i]->get_is_open())
- 76                 {
- 77                     if (!sensors[i]->get_bypassed())
- 78                     {
-79                         flag = false;
- 80                     }
- 81                 }
- 82             }
- 83             return flag;
- 84         }
- 85         ~ Location()
- 86         {
- 87             for (int i = 0; i < count; i++)
- 88             {
- 89                 sensors[i] = NULL;
- 90             }
+        {
+            name = n;
+            is_open = io;
+            bypassed = byp;
+        }
+
+        bool get_is_open() const // Accessor
+        {
+            return is_open;
+        }
+
+        bool get_bypassed() const // Accessor
+        {
+            return bypassed;
+        }
+};
+
+Sensor * create(string name, bool is_bypassed, bool is_open)
+{
+    Sensor * s1 = new Sensor(name, is_bypassed, is_open);
+    return s1;
+}
+
+class Location
+{
+    private:
+        Sensor * sensors[100];
+        int count;  // keeps track of sensors added to array
+        int opensensors = 0;
+        int bypassedsensors = 0;
+        bool armed;
+    public:
+        Location()
+        {
+            count = 0;
+            armed = false;
+        }
+
+        void add(string name, bool byp, bool io)
+        {
+            sensors[count] = create(name, byp, io); // assigns the address of the new sensor to the vacant sensor array slot
+            count++;
+        }
+
+        bool arm()
+        {
+            bool flag = true;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (sensors[i]->get_is_open())
+                {
+                    opensensors++;
+                }
+
+                if (sensors[i]->get_bypassed())
+                {
+                    bypassedsensors++;
+                }
+
+                if (sensors[i]->get_is_open())
+                {
+                    if (!sensors[i]->get_bypassed())
+                    {
+                        flag = false;
+                    }
+                }
+            }
+            return flag;
+        }
+        ~ Location()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                sensors[i] = NULL;
+}
  91         }
  92 
  93         int get_opensensors() const // Accessor
