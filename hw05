@@ -286,37 +286,37 @@ bool strange(int lhs, int rhs)
             rhsWord = "four";
             break;
         case 5:
-289             rhsWord = "five";
-290             break;
-291         case 6:
-292             rhsWord = "six";
-293             break;
-294         case 7:
-295             rhsWord = "seven";
-296             break;
-297         case 8:
-298             rhsWord = "eight";
-299             break;
-300         case 9:
-301             rhsWord = "nine";
-302             break;
-303         default:
-304             rhsWord = "";
-305             break;
-306     }
-307 
-308     // Compare the first characters of the English words alphabetically
-309     return lhsWord[0] < rhsWord[0];
-310 
-311     return true;
-312 }
-313 
-314 bool increasing(int lhs, int rhs)
-315 {
-316     return lhs < rhs;
-317 }
-318 
-319 bool decreasing(int lhs, int rhs)
-320 {
-321     return lhs > rhs;
-322 }
+            rhsWord = "five";
+            break;
+        case 6:
+            rhsWord = "six";
+            break;
+        case 7:
+            rhsWord = "seven";
+            break;
+        case 8:
+            rhsWord = "eight";
+            break;
+        case 9:
+            rhsWord = "nine";
+            break;
+        default:
+            rhsWord = "";
+            break;
+    }
+
+    // Compare the first characters of the English words alphabetically
+    return lhsWord[0] < rhsWord[0];
+
+    return true;
+}
+
+bool increasing(int lhs, int rhs)
+{
+    return lhs < rhs;
+}
+
+bool decreasing(int lhs, int rhs)
+{
+    return lhs > rhs;
+}
