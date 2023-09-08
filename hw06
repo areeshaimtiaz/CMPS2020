@@ -1,0 +1,365 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node
+{
+    int value;
+    Node * left;
+    Node * right;
+};
+
+class BST
+{
+    private:
+        int count;
+        Node * root;
+
+        Node * create(int value)
+        {
+            // This function returns the address of a new node (use the new operator to create a new node)
+            Node * newnode;
+            try
+            {
+                newnode = new Node;
+            }
+            catch (bad_alloc)
+            {
+                newnode = NULL;
+            }
+
+            // Set the node's value to value
+            newnode->value = value;
+
+            // Set both left and right to NULL
+            newnode->left = NULL;
+            newnode->right = NULL;
+
+            // Increment the private variable count
+            count = count + 1;
+
+            // USAGE: To create a new node, use as follows
+            // Node * newnode = create();
+
+            return newnode;
+        }
+
+        void add_node(Node *subtreeroot, int value)
+        {
+            // This function will recursively traverse subtreeroot to correctly place the new value
+            // Using VLR traversal, check that the current node being "visited" is not equivalent to value
+            // If it is, stop the traversal - we only want to add in unique values
+            // Otherwise, this function will create a new node at the appropriate time during traversal and link the new node     to the correct parent as appropriate
+
+            if (subtreeroot->value != value)
+            {
+                if (value < subtreeroot->value)
+                {
+                    if (subtreeroot->left != NULL)
+                    {
+                        add_node(subtreeroot->left, value);
+                    }
+                    else
+                    {
+                        subtreeroot->left = create(value);
+                    }
+                }
+                else
+                {
+                    if (subtreeroot->right != NULL)
+                    {
+                        add_node(subtreeroot->right, value);
+                    }
+                    else
+                    {
+                        subtreeroot->right = create(value);
+                    }
+                }
+            }
+        }
+
+        void destroy_node(Node * node)
+        {
+            // In this function, recursively call node->left, then node->right as long as node is not NULL 
+
+            if (node != NULL)
+            {
+                destroy_node(node->left);
+                destroy_node(node->right);
+            }
+
+            delete node;
+            count = count - 1;
+        }
+
+        Node * find_node(Node * subtreeroot, int value)
+        {
+            // This function calls itself recursively in VLR traversal mode looking for value
+            // This function returns NULL if it doesn't find a matching node
+            // It returns the address of a matching node whose value is value
+
+            Node * node = NULL;
+
+            if (subtreeroot != NULL)
+            {
+                if (subtreeroot->value == value)
+                {
+                    node = subtreeroot;
+                }
+                else if (value < subtreeroot->value)
+                {
+                    node = find_node(subtreeroot->left, value);
+                }
+                else
+                {
+                    node = find_node(subtreeroot->right, value);
+                }
+            }
+
+            return node;
+        }
+
+    public:
+        BST()
+        {
+            // set root to NULL and count to 0
+            root = NULL;
+            count = 0;
+        }
+
+        ~BST()
+        {
+            // call destroy_node() passing in root to start the traversal
+            destroy_node(root);
+        }
+
+        void add(int item)
+        {
+            // First item being added
+            if (root == NULL)
+            {
+                root = create(item);
+            }
+            else
+            {
+                add_node(root, item);
+            }
+        }
+
+        int get_count() // Accessor
+        {
+            return count;
+        }
+
+        bool find(int value)
+        {
+            // This function returns true if it finds value in the tree, or false if it doesn't find value in the tree.
+            bool result = false;
+            if (find_node(root, value) != NULL)
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        bool delete_node(int value)
+        {
+            bool found = false;
+            Node * temp = root;
+            Node * parent = NULL;
+            Node * replacement;
+
+            // find the node to delete and identify its parent
+            // this is iterative, rather than recursive
+            while ((!found) && (temp != NULL))
+            {
+                if (value == temp->value)
+                {
+                    found = true;
+                }
+                else if (value < temp->value)
+                {
+                    parent = temp;
+                    temp = temp->left;
+                }
+                else if (value > temp->value)
+                {
+                    parent = temp;
+                    temp = temp->right;
+                }
+            }
+
+            if (found)
+            {
+                // the node to be deleted is a leaf
+                if ((temp->left == NULL) && (temp->right == NULL))
+                {
+                    if (parent->left == temp)
+                    {
+                        parent->left = NULL;
+                    }
+                    else if (parent->right == temp)
+                    {
+                        parent->right = NULL;
+                    }
+                    delete temp;
+                }
+                // the node to be deleted has one child
+                else if ((temp->left == NULL) || (temp->right == NULL))
+                {
+                    if (parent->left == temp)
+                    {
+                        if (temp->left != NULL) // Left node
+                        {
+                            parent->left = temp->left;
+                        }
+                        else // Right node
+                        {
+                            parent->left = temp->right;
+                        }
+                    }
+                    else if (parent->right == temp)
+                    {
+                        if (temp->left != NULL) // Left node
+                        {
+                            parent->right = temp->left;
+                        }
+                        else // Right node
+                        {
+                            parent->right = temp->right;
+                        }
+
+                    }
+                }
+                // a matching node has two children
+                else
+                {
+                    replacement = temp->right;
+                    while (replacement->left != NULL)
+                    {
+                        parent = replacement;
+                        replacement = replacement->left;
+                    }
+
+                    temp->value = replacement->value;
+                    temp = replacement;
+                }
+
+                Node * subtree = temp->right;
+
+                if (subtree == NULL)
+                {
+                    subtree = temp->left;
+                }
+
+                if (temp->value < parent->value)
+                {
+                    parent->left = subtree;
+                }
+                else
+                {
+                    parent->right = subtree;
+                }
+
+                delete temp;
+            }
+            return found;
+        }
+
+        friend void show(BST & bst);
+};
+
+void show_node(Node * subtreeroot)
+{
+    // This function will recursively traverse subtreeroot and display the value of the nodes, using LVR (in-order) traversal
+    if (subtreeroot != NULL)
+    {
+        show_node(subtreeroot->left);
+        cout << subtreeroot->value << " ";
+        show_node(subtreeroot->right);
+    }
+}
+
+void show(BST & bst)
+{
+    // This function will call show_node, using LVR traversal
+    show_node(bst.root);
+    cout << endl;
+}
+
+int count_smaller(Node * root, int value)
+{
+    int result = 0;
+
+    if (root != NULL)
+    {
+        if (root->value >= value)
+        {
+            count_smaller(root->left, value);
+        }
+        else
+        {
+            result = result + 1;
+            result = result + count_smaller(root->left, value);
+            result = result + count_smaller(root->right, value);
+        }
+    }
+    return result;
+}
+
+int main()
+{
+    BST bst;
+    char reply;
+    int value, key;
+    int values[25] = {23, 117, 45, 19, 7, 13, 17, 40, 9, 11, 93, 49, 35, 8, 3, 10, 22, 77, 16, 6, 51, 57, 55, 90, 31};
+
+    // Fill up a BST object by adding all the items from the values array, one at a time. Call bst.add() to add each item from     the array
+    for (int i = 0; i < 25; i++)
+    {
+        bst.add(values[i]);
+    }
+
+    // Display the contents of the BST using the friend function.
+    show(bst);
+
+    // Ask the user to enter a new integer value
+    cout << "Enter a new integer value: ";
+    cin >> value;
+
+    // Add this new value into the BST object
+    bst.add(value);
+
+    // Display the contents of the BST again using friend function
+    show(bst);
+
+    // Display the count of nodes in the BST
+    cout << "Count of nodes: " << bst.get_count() << endl;
+
+    // Ask the user to search for a value
+    cout << "Enter the value to be searched for: ";
+    cin >> key;
+
+    if (bst.find(key))
+    {
+        cout << key << " was found in the binary search tree." << endl;
+        cout << "Would you like to delete " << key << "?" << endl;
+        cout << "Choice: ";
+        cin >> reply;
+
+        if ((reply == 'y') || (reply == 'Y'))
+        {
+            bst.delete_node(key);
+        }
+        show(bst);
+    }
+    else
+    {
+        cout << key << " was NOT found in the binary search tree." << endl;
+    }
+
+    cout << endl << endl;
+    count_smaller(bst.root, 53);
+
+    return 0;
+}
