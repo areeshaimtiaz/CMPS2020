@@ -1,0 +1,340 @@
+#include <iostream>
+#include <chrono>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+void fill_array_random(int array[], int size, int lbounds, int ubounds)
+{
+    // This function will fill an array of size with values that are between lbounds and ubounds
+    int num;
+    for (int i = 0; i < size; i++)
+    {
+        num = (rand() % (ubounds - lbounds)) + lbounds;
+        array[i] = num;
+    }
+}
+
+void fill_array_inc(int array[], int size)
+{
+    // This function will fill the array with each element containing increasing values, starting from 1 to size
+    for (int i = 0; i < size; i++)
+    {
+        array[i] = i;
+    }
+}
+
+void fill_array_dec(int array[], int size)
+{
+    // This function will fill the array with each element containing decreasing values, starting from size to 1
+    int temp = size;
+    for (int i = 0; i < size; i++)
+    {
+        array[i] = temp;
+        temp = temp - 1;
+    }
+}
+
+void bubble_sort(int array[], int size)
+{
+    // This function will sort array using the bubble sort algorithm
+
+    int temp, j = 0;
+    bool swap = true;
+
+    while ((j < size) && (swap))
+    {
+        swap = false;
+        for (int i = 0; i < size; i++)
+        {
+            if (array[i] > array[i + 1])
+            {
+                temp = array[i];
+                array[i] = array[i + 1];
+                array[i + 1] = temp;
+                swap = true;
+            }
+        }
+        j = j + 1;
+    }
+}
+
+void insertion_sort(int array[], int size)
+{
+    //  This function will sort array using the insertion sort algorithm
+
+    int temp, j;
+
+    for (int i = 0; i < size - 1; i++)
+    {
+        if (array[i] > array[i + 1])
+        {
+            temp = array[i + 1];
+            j = i;
+
+            while ((temp < array[j]) && (j != -1))
+            {
+                array[j + 1] = array[j];
+                j = j - 1;
+            }
+            array[j + 1] = temp;
+        }
+    }
+}
+
+void insertion_sort(int array[], int low, int high)
+{
+    //  This function will sort array using the insertion sort algorithm
+
+    int temp, j;
+
+    for (int i = low; i < high; i++) // either less than OR less than or equal to
+    {
+        if (array[i] > array[i + 1])
+        {
+            temp = array[i + 1];
+            j = i;
+
+            while ((temp < array[j]) && (j != -1))
+            {
+                array[j + 1] = array[j];
+                j = j - 1;
+            }
+            array[j + 1] = temp;
+        }
+    }
+}
+
+void selection_sort(int array[], int size)
+{
+    // This function will sort array using the selection sort algorithm
+
+    int smallest, j, k, temp;
+    bool found;
+
+    for (int k = 0; k < size; k++)
+    {
+        smallest = array[k];
+        found = false;
+        for (int i = 1 + k; i < size; i++)
+        {
+            if (array[i] < smallest)
+            {
+                smallest = array[i];
+                j = i;
+                found = true;
+            }
+        }
+
+        if (found)
+        {
+            temp = array[j];
+            array[j] = array[k];
+            array[k] = temp;
+        }
+    }
+}
+
+int get_pivot_position(int array[], int low, int high)
+{
+    // determine the median value in the array and return its index as pivot position
+    int position;
+
+    int a = low;   // first
+    int b = (low + high) / 2;   // middle
+    int c = high;   // last
+
+    if (((array[a] > array[b]) && (array[a] < array[c])) || ((array[a] < array[b]) && (array[a] > array[c])))
+    {
+        position = a;
+    }
+    else if (((array[b] > array[a]) && (array[b] < array[c])) || ((array[b] < array[a]) && (array[b] > array[c])))
+    {
+        position = b;
+    }
+    else if (((array[c] > array[a]) && (array[c] < array[b])) || ((array[c] < array[a]) && (array[c] > array[b])))
+    {
+        position = c;
+    }
+    return position;
+}
+
+int partition(int array[], int low, int high)
+{
+    // call get_pivot_position() to determine the pivot value
+    int temp;
+    int pivot = get_pivot_position(array, low, high);
+
+    // set the pivot as the last element
+    temp = array[pivot];
+    array[pivot] = array[high];
+    array[high] = temp;
+
+    // index for traversal until a collision occurs 
+    int i = low;
+    int j = high - 1;
+
+    while (i < j)
+    {
+        if ((array[i] < array[high]) && (i < j))
+        {
+            i = i + 1;
+        }
+
+        if ((array[j] > array[high]) && (i < j))
+        {
+            j = j - 1;
+        }
+
+        if (((array[i] > array[high]) && (array[j] < array[high])) && (i < j))
+        {
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+
+    // place pivot in the position of index i
+    temp = array[i];
+    array[i] = array[high];
+    array[high] = temp;
+
+    // return the position of the partition
+    return i;
+}
+
+void quick_sort(int array[], int low, int high)
+212 {
+213     int pivot;
+214     // This function will sort array using the quick sort algorithm
+215     // modify to call the insertion sort is partition is less than or equal to 5
+216 
+217         // partition is less than or equal to 5
+218         if ((high - low) <= 5)
+219         {
+220             insertion_sort(array, low, high);
+221         }
+222 
+223         else
+224         {
+225             pivot = partition(array, low, high); // Why could pivot not be declared outside the inner if
+226             quick_sort(array, low, pivot - 1);
+227             quick_sort(array, pivot + 1, high);
+228         }
+230 }
+231 
+232 void show_array(int array[], int size)
+233 {
+234     for (int i = 0; i < size; i++)
+235     {
+236         cout << array[i] << " ";
+237     }
+238     cout << endl;
+239 }
+253 int main()
+254 {
+255     srand(time(NULL));
+256 
+257     int arraysize;
+258 
+259     cout << "Enter array size: ";
+260     cin >> arraysize;
+261 
+262     int array[arraysize];
+263 
+264     cout << "Bubble sort (Random) took ";
+265     fill_array_random(array, arraysize, 1000, 1000000);
+266 
+267     auto start = chrono::steady_clock::now();
+268     bubble_sort(array, arraysize);
+269     auto end = chrono::steady_clock::now();
+270     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+271 
+272     cout << "Bubble sort (Increasing) took ";
+273     fill_array_inc(array, arraysize);
+274 
+275     start = chrono::steady_clock::now();
+276     bubble_sort(array, arraysize);
+277     end = chrono::steady_clock::now();
+278     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+279 
+280     cout << "Bubble sort (Decreasing) took ";
+281     fill_array_dec(array, arraysize);
+282 
+283     start = chrono::steady_clock::now();
+284     bubble_sort(array, arraysize);
+285     end = chrono::steady_clock::now();
+286     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+287 
+288     cout << "Insertion sort (Random) took ";
+289     fill_array_random(array, arraysize, 1000, 1000000);
+290 
+291     start = chrono::steady_clock::now();
+292     insertion_sort(array, arraysize);
+293     end = chrono::steady_clock::now();
+294     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+295 
+296     cout << "Insertion sort (Increasing) took ";
+297     fill_array_inc(array, arraysize);
+299     start = chrono::steady_clock::now();
+300     insertion_sort(array, arraysize);
+301     end = chrono::steady_clock::now();
+302     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+303 
+304     cout << "Insertion sort (Decreasing) took ";
+305     fill_array_dec(array, arraysize);
+306 
+307     start = chrono::steady_clock::now();
+308     insertion_sort(array, arraysize);
+309     end = chrono::steady_clock::now();
+310     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+311 
+312     cout << "Selection sort (Random) took ";
+313     fill_array_random(array, arraysize, 1000, 1000000);
+314 
+315     start = chrono::steady_clock::now();
+316     selection_sort(array, arraysize);
+317     end = chrono::steady_clock::now();
+318     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+319 
+320     cout << "Selection sort (Increasing) took ";
+321     fill_array_inc(array, arraysize);
+322 
+323     start = chrono::steady_clock::now();
+324     selection_sort(array, arraysize);
+325     end = chrono::steady_clock::now();
+326     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+327 
+328     cout << "Selection sort (Decreasing) took ";
+329     fill_array_dec(array, arraysize);
+330 
+331     start = chrono::steady_clock::now();
+332     selection_sort(array, arraysize);
+333     end = chrono::steady_clock::now();
+334     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+335 
+336     cout << "Quick sort (Random) took ";
+337     fill_array_random(array, arraysize, 1000, 1000000);
+338 
+339     start = chrono::steady_clock::now();
+340     quick_sort(array, 0, arraysize - 1);
+341     end = chrono::steady_clock::now();
+342     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+343 
+344     cout << "Quick sort (Increasing) took ";
+345     fill_array_inc(array, arraysize);
+346 
+347     start = chrono::steady_clock::now();
+348     quick_sort(array, 0, arraysize - 1);
+349     end = chrono::steady_clock::now();
+350     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+351 
+352     cout << "Quick sort (Decreasing) took ";
+353     fill_array_dec(array, arraysize);
+354 
+355     start = chrono::steady_clock::now();
+356     quick_sort(array, 0, arraysize - 1);
+357     end = chrono::steady_clock::now();
+358     cout << chrono::duration_cast<chrono::milliseconds>(end-start).count() << endl;
+359 }
