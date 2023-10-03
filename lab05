@@ -1,0 +1,166 @@
+#include <iostream>
+using namespace std;
+
+struct Location
+{
+    string name;
+    string url;
+};
+
+struct VisitNode
+{
+    Location loc;
+    VisitNode * next;
+};
+
+class Stack
+{
+    private:
+        VisitNode * head = NULL;
+
+        VisitNode * create()
+        {
+            VisitNode * newnode;
+            try
+            {
+                newnode = new VisitNode;
+            }
+            catch (bad_alloc)
+            {
+                newnode = NULL;
+            }
+            return newnode;
+        }
+
+        // USAGE: To create a new node, use as follows
+        // VisitNode * newnode = create();
+
+        void deallocate()
+        {
+            // This function will traverse the entire list and delete each node. Remember to make a copy of head. Also, realize that if you delete the current node as you're traversing, you may lose the reference to the next node.
+            VisitNode * temp;
+            while (head != NULL)
+            {
+                temp = head;
+                temp = temp->next;
+                delete head;
+                head = temp;
+            }
+        }
+    public:
+        // Create a destructor which will call deallocate() and set head to NULL.
+        ~ Stack ()
+        {
+            deallocate();
+            head = NULL;
+        }
+        bool push(string name, string url)
+        {
+            bool flag = false;
+            // create a new node (VisitNode) using the create() function you wrote earlier. The new node will be assigned the values for loc from the function's parameter values.
+
+            VisitNode * newnode = create();
+            newnode->loc.name = name;
+            newnode->loc.url = url;
+
+            // add the new node to the front of the linked list (where head points). Remember to deal with two possible scenarios: 1) The list is still empty and this is the first node to be added and 2) The list is not empty 
+            // point head to the newly-added node
+
+            // This list is still empty and this is the first node to be added
+            if (head == NULL)
+            }
+            // the list is not empty
+            else
+            {
+                newnode->next = head;
+                head = newnode;
+            }
+
+            if (newnode != NULL)
+            {
+                flag = true;
+            }
+            // return true if it's successful, and false otherwise. The only reason it would be false is if the new node didn't get created by the create() function (if the new node is NULL)
+            return flag;
+        }
+
+        string pop()
+        {
+            VisitNode * temp;
+            string result = "";
+            // Identify the node at the front of the list (if not empty)
+            if (head != NULL)
+            {
+                temp = head;
+                // Copy the value of the node's loc.name property into a temporary variable
+                result = temp->loc.name;
+                // Point head to the next node in the list (or NULL if it's the last node)
+
+                // Next Node
+                if (head->next != NULL)
+                {
+                    temp = temp->next;
+                }
+                // Last Node
+                else
+                {
+                    temp = NULL;
+}
+            }
+
+            // delete the first node (this effectively is the "pop" action)
+            delete head;
+            head = temp;
+
+            // Return the loc.name value stored in the temporary variable. Return a blank string if the linked list is empty
+            return result;
+        }
+
+        friend void show(Stack & S);
+
+        // This will display all the loc.name values of all the nodes on a single line, separated by spaces. Traverse the entire linked list to show the node values.
+
+};
+void show(Stack & S)
+{
+    VisitNode * temp = S.head;
+    while (temp != NULL)
+    {
+        cout << temp->loc.name << " ";
+        temp = temp->next;
+    }
+}
+int main()
+{
+    Stack browser;
+
+    // simulate a browser history
+    browser.push("Google", "//google.com");
+    browser.push("Amazon", "//amazon.com");
+    browser.push("LinkedIn", "//LinkedIn.com");
+    browser.push("Reddit", "//reddit.com");
+
+    show(browser);   // this should show the entire history
+
+    // simulate clicking Back button
+    string top = browser.pop();
+    if (top != "")
+        cout << endl << endl << "Clicked back from " << top << endl;
+    show(browser);
+
+    // simulate clicking Back button  
+    top = browser.pop();
+    if (top != "")
+        cout << endl << endl << "Clicked back from " << top << endl;
+    show(browser);
+
+    // simulate clicking Back button
+    top = browser.pop();
+    if (top != "")
+    cout << endl << endl << "Clicked back from " << top << endl;
+    show(browser);
+
+    cout << endl;
+    return 0;
+}
+     
