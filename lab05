@@ -105,7 +105,7 @@ class Stack
                 else
                 {
                     temp = NULL;
-}
+                }
             }
 
             // delete the first node (this effectively is the "pop" action)
